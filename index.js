@@ -9,18 +9,7 @@ const simulators = []
 const devicesSectionTitle = '== Devices =='
 const simulatorsSectionTitle = '== Simulators =='
 
-// exec shell script
-async function sh(cmd) {
-  return new Promise(function (resolve, reject) {
-    exec(cmd, (err, stdout, stderr) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve({ stdout, stderr });
-      }
-    });
-  });
-}
+fetchingDevices()
 
 // Step 1 Fetching Devices
 async function fetchingDevices() {
@@ -47,21 +36,45 @@ async function fetchingDevices() {
   askForSelection()
 }
 
-fetchingDevices()
-
 // Step 2 Ask for user request
 async function askForSelection() {
   const selectedUDID = await inquirer.prompt({ 
     name: 'selectedUDID',
     type: 'list',
-    message: 'Select device you want to install',
+    message: 'Select device you want to install\n',
     choices: devices
   });
 
   return handleDeviceStart(selectedUDID)
 }
 
-async function handleDeviceStart(udid) {
-  console.log(udid)
+
+// Helpers 
+
+// exec shell script
+async function sh(cmd) {
+  return new Promise(function (resolve, reject) {
+    exec(cmd, (err, stdout, stderr) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve({ stdout, stderr });
+      }
+    });
+  });
 }
+
+async function handleDeviceStart(udid) {
+  let totalStringFromObject = udid.selectedUDID
+  let udidString = totalStringFromObject.split(' ')
+    .join('§ §')
+    .split('§')
+    .filter(function(item) {
+      return item != ' '
+    })[2]
+    .replace('(', '')
+    .replace(')', '')
+  console.log(udidString)
+}
+
 
