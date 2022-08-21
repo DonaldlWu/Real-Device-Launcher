@@ -45,7 +45,22 @@ async function askForSelection() {
     choices: devices
   });
 
-  return handleDeviceStart(selectedUDID)
+  return startProjectOnDeviceByUDID(selectedUDID)
+}
+
+// Step 3 Run npx script to build and run project on device
+async function startProjectOnDeviceByUDID(selectedUDID) {
+  const udid = await getDeviceUDIDString(selectedUDID)
+  const spinner = createSpinner('Install and run on your devices...').start();
+  const command = `npx react-native run-ios --udid ${udid}`
+  try {
+    let { stdout, stderr } = await sh(command)
+    console.log(stderr)
+    console.log(stdout)
+  } catch (e) {
+    console.log(e)
+  }
+  spinner.stop()
 }
 
 
@@ -64,7 +79,7 @@ async function sh(cmd) {
   });
 }
 
-async function handleDeviceStart(udid) {
+async function getDeviceUDIDString(udid) {
   let totalStringFromObject = udid.selectedUDID
   let udidString = totalStringFromObject.split(' ')
     .join('§ §')
@@ -74,7 +89,7 @@ async function handleDeviceStart(udid) {
     })[2]
     .replace('(', '')
     .replace(')', '')
-  console.log(udidString)
+  return udidString
 }
 
 
