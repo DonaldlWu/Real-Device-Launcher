@@ -41,7 +41,7 @@ async function askForSelection() {
   const selectedUDID = await inquirer.prompt({ 
     name: 'selectedUDID',
     type: 'list',
-    message: 'Select device you want to install\n',
+    message: 'Select device\n',
     choices: devices
   });
 
